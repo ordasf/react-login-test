@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+
+  mongodb:
+    image: mongo
+    hostname: mongodb
+    ports:
+    - "27017:27017"
+    - "28017:28017"
+    networks:
+      loginnet:
+        aliases:
+          - mongodb
+
+  backend:
+    build:
+      context: ../backend
+    hostname: backend
+    ports:
+    - "5656:5656"
+    depends_on:
+      - mongodb
+    networks:
+      loginnet:
+        aliases:
+          - backend
+
+  frontend:
+    build:
+      context: ../react-login-test
+    hostname: frontend
+    ports:
+    - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      loginnet:
+        aliases:
+          - frontend
+
+networks:
+  loginnet:
+    driver: bridge
